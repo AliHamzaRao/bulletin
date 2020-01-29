@@ -1,19 +1,10 @@
-var path = require('path')
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-const glob = require('glob-all')
-var PurifyCSSPlugin= require('purifycss-webpack'); 
-
 module.exports = {
-  entry: [
-    './src/js/index.jsx',
-    './src/css/styles.scss'
-  ],
+  entry: ["./src/js/index.jsx", "./src/css/styles.scss"],
   output: {
     path: `${__dirname}/dist/js`,
-    filename: 'bundle.js',
+    filename: "bundle.js",
+    publicPath: "/js"
   },
-
-  //watch: true,
 
   module: {
     rules: [
@@ -21,10 +12,13 @@ module.exports = {
         test: /\.jsx$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['env', 'react'],
-            plugins: ["transform-object-rest-spread", "transform-class-properties"]
+            presets: ["env", "react"],
+            plugins: [
+              "transform-object-rest-spread",
+              "transform-class-properties"
+            ]
           }
         }
       },
@@ -32,56 +26,47 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['env'],
-            plugins: ["transform-object-rest-spread", "transform-class-properties"]
+            presets: ["env"],
+            plugins: [
+              "transform-object-rest-spread",
+              "transform-class-properties"
+            ]
           }
         }
       },
       {
-        test:/\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: [ 
-            {
-              loader: 'css-loader',
-              options: {
-                url: false
-              }
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              url: false
             }
-          ]
-        })
+          }
+        ]
       },
       {
-        test:/\.scss$/,
-        use: ExtractTextPlugin.extract({
-          use: [ 
-            {
-              loader: 'css-loader',
-              options: {
-                url: false
-              }
-            },
-            'sass-loader'
-          ]
-        })
+        test: /\.scss$/,
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              url: false
+            }
+          },
+          "sass-loader"
+        ]
       }
     ]
   },
 
-  resolve: {
-    extensions:['.js', '.jsx']
-  },
+  devtool: "source-map",
 
-  plugins: [
-    new ExtractTextPlugin({
-      filename: '../css/styles.css'
-    }),
-    new PurifyCSSPlugin({
-      paths: glob.sync([
-        path.join(__dirname, 'dist/index.html'),
-        path.join(__dirname, 'src/js/*.js')
-      ])
-    })
-  ]
+  resolve: {
+    extensions: [".js", ".jsx"]
+  }
 };
